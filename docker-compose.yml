@@ -1,0 +1,23 @@
+services:
+  api:
+    build: ./api
+    ports:
+      - "3000:3000"
+    environment:
+      port: "3000"
+      dataDir: /app/data
+    volumes:
+      - reportsData:/app/data
+    restart: unless-stopped
+
+  # Solo se levanta cuando se pide con: docker compose run --rm agent
+  agent:
+    build: ./agent
+    profiles: ["agent"]
+    depends_on:
+      - api
+    environment:
+      apiUrl: http://api:3000
+
+volumes:
+  reportsData:
